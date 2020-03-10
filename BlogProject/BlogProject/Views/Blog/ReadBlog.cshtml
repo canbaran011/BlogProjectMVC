@@ -1,0 +1,292 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "ReadBlog";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading text-center">
+        <h2 style="overflow-wrap: break-word">@Model.blog.Title</h2>
+    </div>
+    <div class="panel-body text-center readMainImg">
+        <img src="~/Images/@Model.blog.DefaultImage" />
+        <hr />
+        <p>
+            @Model.blog.Text
+        </p>
+    </div>
+
+    <div class="panel-footer iconSize">
+        <span> <b class="glyphicon glyphicon-comment"></b>&nbsp; @Model.blog.Comments.Count &nbsp; &nbsp; &nbsp;</span>
+        @if ((Model.blog.UsersID != Convert.ToInt32(Session["ID"])))//eğer blogun id si ile bloga bakan kisinin useridsi aynıysa ona favorilere ekleme kapalı
+        {
+
+            if (Model.likedBlogs.Liked == false)
+            {
+                //aynı id çok yerde verildi id sadece bloga ulaşmak için kullanılıyor.Id ile işlem yapılırsa compnentlerin çoğuna yapılan işlemi uygular.
+                <span > <b id=@Model.blog.ID style="font-size:20px"  class="glyphicon glyphicon-heart-empty IncreaseLike"></b>&nbsp; @Model.blog.NumOfLikes  &nbsp; &nbsp; &nbsp;</span>
+            }
+            else
+            {
+                <span > <b id=@Model.blog.ID style="color:red; font-size:20px" class="glyphicon glyphicon-heart DecreaseLike"></b>&nbsp; @Model.blog.NumOfLikes  &nbsp; &nbsp; &nbsp;</span>
+            }
+
+
+            if (Model.likedBlogs.Favourite == false) //false ise blog kişinin favorilerinde değildir
+            {
+                <button id=@Model.blog.ID class="btn btn-info btn-xs AddFavourite">Add Favourite</button>
+            }
+            else
+            {
+                <button id=@Model.blog.ID class="btn btn-danger btn-xs RemoveFavourite">Remove Favourite</button>
+            }
+            @:  &nbsp;
+            @Html.ActionLink("Report Blog", "ReportBlog", "Blog", new { blogID = Model.blog.ID }, new { @class = "btn btn-danger btn-xs" })
+        }
+        else
+        {
+            @:  &nbsp;
+            @*@Html.ActionLink("Delete Blog", "DeleteBlog", "Blog", new { blogID = Model.blog.ID }, new { @class = "btn btn-danger btn-xs DeleteBlog", id = Model.blog.ID })*@
+
+            <button id=@Model.blog.ID class="btn btn-danger btn-xs DeleteBlog">Delete Blog</button>
+        }
+        <div class="pull-right">
+            <a class="btn btn-warning btn-xs"> <b>User: @Model.blog.Users.UserName</b> </a>&nbsp;
+            &nbsp;
+            <a href="/Blog/BlogCategories/@Model.blog.CategoriesID" class="btn btn-warning btn-xs"> <b>Categori: @Model.blog.Categories.CategoriName</b> </a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+@*<p style="color:red">
+    favoriler remove add yapıldıkça yeniden eklenip siliniyor. LikedBlogs tablosunda her tıklamada silip ekleyerek yeni id veriyor id nin ırzına geçiyor. oraya silindimi kolonu eklesem maliyeti ne olur? tutacağı yer mi önemli yoksa silinip yeniden eklendiğinde yeni id verilmesi mi?
+    bir başkası çözerse ve sürekli tıklarsa veritabanını patlatabilir mi ?
+</p>*@
+<label style="font-size:25px"> <span style="font-size:25px" class=" badge">  @Model.blog.Comments.Count </span> Comments:</label>
+@*<a href="#">Inbox <span class="badge">42</span></a>
+
+    <button class="btn btn-primary" type="button">
+      Messages <span class="badge">4</span>
+    </button>*@
+
+
+
+@foreach (var item in Model.blog.Comments)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">   <p> <label class="label label-info"> by&nbsp;@item.Users.UserName</label>  - @item.CommentDate </p></div>
+        <div class="panel-body">
+            <p>
+                <span style="white-space:pre-line">@item.Text</span>
+                @*@MvcHtmlString.Create(item.Text.Replace(Environment.NewLine, "<br />"))*@
+            </p>
+        </div>
+        @if (Convert.ToInt32(Session["ID"]) == item.UsersID)
+        {
+            <div class="panel-footer">
+                @*@Html.ActionLink("Delete Comment", "DeleteComment", "Blog", new { id = item.ID }, new { @class = "btn btn-info btn-xs deleteComment", id = item.ID })*@
+
+                <button id=@item.ID class="btn btn-danger btn-xs deleteComment">Delete Comment</button>
+            </div>
+        }
+    </div>
+}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Add Comments
+    </div>
+    <div class="panel-body">
+        @Html.TextArea("txtComment", new { @class = "form-control", rows = "6" })
+    </div>
+
+    <div class="panel-footer">
+        @*@Html.ActionLink("Add Comment", "AddComment", "Blog", new { blogID = Model.blog.ID, userID = Convert.ToInt32(Session["ID"]) }, new { @class = "btn btn-warning pull-right" })*@
+        <button id=@Model.blog.ID class="btn btn-warning pull-right addComment">Add Comment</button>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<br /><br />
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/jquery-confirm.min.css" />
+<script type="text/javascript" src="~/Scripts/jquery-confirm.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".DeleteBlog").click(function () {
+            var blogid = $(this).attr('id');
+            $.confirm({
+                    theme: 'light',
+                    boxWidth: '30%',
+                    title: '',
+                    content: 'Are you sure to delete this blog?',
+                    buttons: {
+                        Yes: {
+                            text: 'Yes',
+                            keys: ['enter', 'shift'],
+                            action: function () {
+                                $.ajax({
+                                    type: "POST",
+                                    url: '@Url.Action("DeleteBlog", "Blog")',
+                                    data: { blogID: blogid },
+                                    success: function (data) {
+                                        if (data.success) {
+                                            window.location.href = "/Blog/UserBlogs";
+                                        }
+                                    }
+                                });
+                            }
+                        },
+                        No: function () {
+                        }
+                    }
+                });
+        });
+
+        $(".AddFavourite").click(function () {
+            var blgID = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddFavourite", "Blog")',
+                data: { blogID: blgID },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                }
+            });
+        });
+         $(".RemoveFavourite").click(function () {
+            var blgID = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemoveFavourite", "Blog")',
+                data: { blogID: blgID },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                }
+            });
+        });
+        $(".IncreaseLike").click(function () {
+            var blgID = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("IncreaseLike", "Blog")',
+                data: { blogID: blgID },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                }
+            });
+        });
+
+        $(".DecreaseLike").click(function () {
+            var blgID = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DecreaseLike", "Blog")',
+                data: { blogID: blgID },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                }
+            });
+        });
+
+
+
+        $(".addComment").click(function () {
+            var blgID = $(this).attr('id');
+            var txt = $("#txtComment").val();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddComment", "Blog")',
+                data: { blogID:blgID, blogText:txt },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                },
+                error: function (response) {
+                    $.alert({
+                        title: 'Alert',
+                        content: "eror",
+                    });
+                }
+            });
+
+        });
+
+
+        $(".deleteComment").click(function () {
+                var deletedID = $(this).attr('id');
+
+                $.confirm({
+                    theme: 'light',
+                    boxWidth: '30%',
+                    title: '',
+                    content: 'Are you sure to delete this comment?',
+                    buttons: {
+                        Yes: {
+                            text: 'Yes',
+                            keys: ['enter', 'shift'],
+                            action: function () {
+
+                                $.ajax({
+                                    type: "POST",
+                                    url: '@Url.Action("DeleteComment", "Blog")',
+                                    data: { id: deletedID },
+                                    success: function (data) {
+                                        window.location.reload();
+                                    }
+                                });
+                            }
+                        },
+                        No: function () {
+                        }
+                    }
+                });
+            });
+    });
+</script>

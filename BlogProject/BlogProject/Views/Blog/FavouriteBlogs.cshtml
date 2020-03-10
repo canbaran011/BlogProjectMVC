@@ -1,0 +1,57 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "FavouriteBlogs";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>FavouriteBlogs</h2>
+
+@foreach (var item in Model.blogList)
+{
+    <div class="col-md-3">
+        <div class="col-md-12 blogCards text-center">
+            <a href="/Blog/ReadBlog/@item.ID"><img src="~/Images/@item.DefaultImage" /></a>
+        </div>
+        <div class="col-md-12 blogCards">
+            <h3>@item.Title </h3>
+        </div>
+
+        <div class="col-md-12 blogCards">
+            <h5>@item.Text. </h5>
+        </div>
+        <div class="col-md-12 blogCards">
+            @Html.ActionLink("Read", "ReadBlog", "Blog", new { id = item.ID }, new { @class = "btn btn-info" })
+            <br /> <br />
+
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="~/Content/jquery-confirm.min.css" />
+<script type="text/javascript" src="~/Scripts/jquery-confirm.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".RemoveFavourite").click(function () {
+            var blgID = $(this).attr('id');
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("RemoveFavourite", "Blog")',
+                data: { blogID: blgID },
+                dataType: "json",
+                success: function (response) {
+                    if (response.success) {
+                        window.location.reload();
+                    } else {
+                        $.alert({
+                            title: 'Alert',
+                            content: response.text,
+                        });
+                    }
+                }
+            });
+        });
+
+    }
+</script>

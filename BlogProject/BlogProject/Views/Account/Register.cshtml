@@ -1,0 +1,46 @@
+﻿@model BlogProject.Models.Users
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>Register</h2>
+<div class="col-md-6">
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post))
+    {
+        <div class="input-group">
+            <span class="input-group-addon " id="txtName">Name</span>
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Enter your Name", required = "required", aria_describedby = "txtName" })
+        </div> <br />
+
+        <div class="input-group">
+            <span class="input-group-addon" id="txtSurname">Surname</span>
+            @Html.TextBoxFor(x => x.Surname, new { @class = "form-control", placeholder = "Enter your Surname", required = "required", aria_describedby = "txtSurname" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="txtEmail">E-Mail</span>
+            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Enter your Email", type = "email", required = "required", aria_describedby = "txtEmail" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="txtPassword">Password</span>
+            @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "Enter your Password", required = "required", aria_describedby = "txtPassword" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="txtNickName">Nick Name</span>
+            @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", placeholder = "Enter your NickName", required = "required", aria_describedby = "txtNickName" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="txtAdress">Adress</span>
+            @Html.TextAreaFor(x => x.Adress, new { @class = "form-control", placeholder = "Enter your Adress", rows = "2", aria_describedby = "txtAdress" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon" id="txtPhone">Phone</span>
+            @Html.TextBoxFor(x => x.Phone, new { @class = "form-control", type = "tel", maxlength = "12", pattern = "[0-9]{3} [0-9]{3} [0-9]{4}", placeholder = "506 123 1212", aria_describedby = "txtName" })
+        </div> <br />
+        <input type="submit" class="btn btn-info" name="name" value="Register" />
+
+    }
+    <br /><br />
+    <div class="alert alert-@ViewBag.Status" role="alert">@ViewBag.Warning</div>
+
+</div>

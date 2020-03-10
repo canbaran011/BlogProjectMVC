@@ -1,0 +1,22 @@
+﻿@model BlogProject.Models.Users
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>Login</h2>
+<div class="col-md-6">
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+    {
+        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Enter your Email or Nickname", required = "required" })<br />
+        @Html.PasswordFor(x => x.Password, new { @class = "form-control", placeholder = "Enter your Password", required = "required" })<br />
+        <button class="btn btn-primary" type="submit">Login</button> <br/><br />
+        <a href="/Account/ForgotPassword" class="label label-default">Forgot password ? </a>
+    }
+    <br /><br />
+    <div class="alert alert-@ViewBag.Status" role="alert">@ViewBag.Warning</div>
+    @if (ViewBag.ForgotPass != null)
+    {
+        <div class="alert alert-success" role="alert">@ViewBag.ForgotPass</div>
+    }
+</div>

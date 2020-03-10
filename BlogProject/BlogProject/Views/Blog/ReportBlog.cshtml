@@ -1,0 +1,30 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "ReportBlog";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>ReportBlog</h2>
+
+<div class="col-md-6">
+    @using (Html.BeginForm("ReportBlog", "Blog", FormMethod.Post))
+    {
+        @Html.HiddenFor(x => x.blog.ID)
+        <div class="">
+            @Html.LabelFor(x => x.blog.Title, Model.blog.Text, new { @class = "form-control reportLabelTable", aria_describedby = "txtTitle" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon " id="txtSubject">Subject</span>
+            @Html.TextBoxFor(x => x.Report.Subject, new { @class = "form-control", placeholder = "Enter subject of to report", required = "required", aria_describedby = "txtSubject" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon " id="txtText">Text</span>
+            @Html.TextAreaFor(x => x.Report.Text, new { @class = "form-control", placeholder = "Enter reason of to report", maxlength = "500",  rows = "10", required = "required", aria_describedby = "txtText" })
+
+        </div> <br />
+
+        <input class="btn btn-info" type="submit">
+    }
+    <br /><br />
+    <div class="alert alert-@ViewBag.Status" role="alert">@ViewBag.Warning</div>
+</div>

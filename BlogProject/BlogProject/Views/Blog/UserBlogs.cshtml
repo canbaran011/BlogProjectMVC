@@ -1,0 +1,26 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "UserBlogs";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>MyBlogs</h2>
+
+@foreach (var item in Model.blogList)
+{
+    <div class="col-md-3">
+        <div class="col-md-12 blogCards text-center">
+            <a href="/Blog/ReadBlog/@item.ID"><img src="~/Images/@item.DefaultImage" /></a> 
+        </div>
+        <div class="col-md-12 blogCards">
+            <h3>@item.Title </h3>
+        </div>
+
+        <div class="col-md-12 blogCards">
+            <h5>@item.Text. </h5>
+        </div>
+        <div class="col-md-12 blogCards">
+            @Html.ActionLink("Read", "ReadBlog", "Blog", new { id = item.ID }, new { @class = "btn btn-info" }) <br /> <br />
+        </div>
+    </div>
+}

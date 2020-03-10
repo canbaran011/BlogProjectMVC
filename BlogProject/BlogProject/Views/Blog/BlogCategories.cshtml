@@ -1,0 +1,51 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "BlogCategories";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2></h2>
+
+@foreach (var item in Model.blogList)
+{
+    <br /><br />
+    <div class="row col-md-12">
+        <br />
+        <div class="col-md-3 blogCards">
+            <a href="/Blog/ReadBlog/@item.ID"><img src="~/Images/@item.DefaultImage" alt="Alternate Text" /></a>
+            <br />
+        </div>
+        <div class="col-md-9">
+            <div class="col-md-12 col-xs-12">
+                <div class="pull-left"><h4>@ViewBag.CategoriName</h4></div>
+                <div class="pull-right"> <h5> by&nbsp;@item.Users.UserName</h5></div>
+            </div>
+
+            <div class="col-md-12 blogCards">
+                <h3>@item.Title</h3>
+            </div>
+            <div class="col-md-12 blogCards">
+                <h5>@item.Text</h5>
+            </div>
+            <div class="col-md-12 iconSize">
+                <span> <b class="glyphicon glyphicon-calendar"></b>&nbsp;@Convert.ToDateTime(@item.AddDate).Date.ToString("dd.MM.yyy") &nbsp;&nbsp; &nbsp;</span>
+                <span> <b class="glyphicon glyphicon-comment"></b>&nbsp; @item.Comments.Count &nbsp; &nbsp; &nbsp;</span>
+                @if (item.LikedBlogs.Where(x => x.BlogsID == item.ID && x.UsersID == (Convert.ToInt32(Session["ID"])) && x.Liked == true).FirstOrDefault() == null)
+                {
+                    //aynı id çok yerde verildi id sadece bloga ulaşmak için kullanılıyor.Id ile işlem yapılırsa compnentlerin çoğuna yapılan işlemi uygular.
+                    <span> <b style="font-size:20px" class="glyphicon glyphicon-heart-empty"></b>&nbsp; @item.NumOfLikes  &nbsp; &nbsp; &nbsp;</span>
+                }
+                else
+                {
+                    <span> <b style="color:red; font-size:20px" class="glyphicon glyphicon-heart"></b>&nbsp; @item.NumOfLikes &nbsp; &nbsp; &nbsp;</span>
+                }
+
+
+                <br /><br />
+                @Html.ActionLink("Read", "ReadBlog", "Blog", new { id = item.ID }, new { @class = "btn btn-info" })
+            </div>
+        </div>
+    </div>
+
+}
+

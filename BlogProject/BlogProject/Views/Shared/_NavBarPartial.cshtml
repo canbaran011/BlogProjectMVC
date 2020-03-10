@@ -1,0 +1,59 @@
+﻿@model BlogProject.Models.NavBarPartialView
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a href="/Home/Index">HomePage</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        Categories
+                        <span class="caret"></span>
+                    </a>
+                    @*@{
+                BlogProject.Models.Manager.DatabaseContext db = new BlogProject.Models.Manager.DatabaseContext();
+                List<BlogProject.Models.Categories> Model = db.Categories.ToList();
+            }*@
+                    <ul class="dropdown-menu">
+                        @foreach (var item in Model.Categori)
+                        {
+                            <li><a href="~/Blog/BlogCategories/@item.ID">@item.CategoriName</a></li>
+                        }
+                    </ul>
+                </li>
+                @if (Session["USER"] == null)
+                {
+                    <li class="dropdown">
+                        <a href="/Account/Login">Login</a>
+                    </li>
+                    <li><a href="/Account/Register">Register</a></li>
+                }
+                else
+                {
+                    <li><a href="/Blog/FavouriteBlogs">My Favourite blogs</a></li>
+                    <li><a href="/Blog/UserBlogs">My blogs</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                            @Session["USER"]
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/Blog/AddBlog">Add blog</a></li>
+                            <li><a href="/Account/UpdateInformation">Update information</a></li>
+                            <li><a href="/Account/ChangePassword">Change password</a></li>
+                            <li><a href="/Account/Logout">Logout</a></li>
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    </div>
+</nav>

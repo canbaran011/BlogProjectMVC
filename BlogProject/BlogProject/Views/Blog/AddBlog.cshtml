@@ -1,0 +1,32 @@
+﻿@model BlogProject.ViewModels.Blog.BlogsViewModel
+@{
+    ViewBag.Title = "AddBlog";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+}
+
+<h2>AddBlog</h2>
+<div class="col-md-6">
+    @using (Html.BeginForm("AddBlog", "Blog", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+    {
+        <div class="input-group">
+            <span class="input-group-addon " id="txtTitle">Title</span>
+            @Html.TextBoxFor(x => x.blog.Title, new { @class = "form-control", placeholder = "Enter blog title", required = "required", aria_describedby = "txtTitle" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon " id="txtText">Text</span>
+            @Html.TextAreaFor(x => x.blog.Text, new { @class = "form-control", placeholder = "Enter blog text", rows = "10", required = "required", aria_describedby = "txtText" })
+        </div> <br />
+        <div class="input-group">
+            <span class="input-group-addon " id="txtCategories">Categories</span>
+            @Html.DropDownListFor(x => x.blog.Categories.ID, (SelectList)Model.categoriSelectList, new { @class = "form-control", required = "required", aria_describedby = "txtCategories" })
+        </div> <br />
+        @*@Html.TextBoxFor(m => m.DefaultImage, new { id = "file", type = "file", accept = "image/*" })*@
+        <input type="file" id="file" name="file" accept="image/*" required = "required"> <br />
+
+        <input class="btn btn-info" type="submit">
+    }
+    <br /><br />
+    <div class="alert alert-@ViewBag.Status" role="alert">@ViewBag.Warning</div>
+</div>
+
+
